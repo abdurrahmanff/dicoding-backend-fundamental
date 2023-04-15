@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+const nanoid = require('nanoid');
 
 class NoteService {
   constructor() {
@@ -68,4 +68,4 @@ class NoteService {
   }
 }
 
-export default NoteService;
+module.exports = NoteService;

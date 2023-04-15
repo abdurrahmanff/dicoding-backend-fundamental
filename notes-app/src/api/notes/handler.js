@@ -100,4 +100,4 @@ class NotesHandler {
   }
 }
 
-export default NotesHandler;
+module.exports = NotesHandler;
