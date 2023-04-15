@@ -1,6 +1,6 @@
-const nanoid = require('nanoid');
+const { nanoid } = require('nanoid');
 
-class NoteService {
+class NotesService {
   constructor() {
     this._notes = [];
   }
@@ -40,13 +40,13 @@ class NoteService {
   }
 
   editNoteById(id, { title, body, tags }) {
-    const index = this._notes.findIndex((n) => n.id === id)[0];
+    const index = this._notes.findIndex((n) => n.id === id);
 
     if (index === -1) {
-      throw new Error('Gagal mengubah catatan, ID tidak ditemukan');
+      throw new Error('Gagal memperbarui catatan. Id tidak ditemukan');
     }
 
-    const updatedAt = new Date().toISOString;
+    const updatedAt = new Date().toISOString();
 
     this._notes[index] = {
       ...this._notes[index],
@@ -58,14 +58,13 @@ class NoteService {
   }
 
   deleteNoteById(id) {
-    const index = this._notes.findIndex((n) => n.id === id)[0];
-
+    const index = this._notes.findIndex((n) => n.id === id);
     if (index === -1) {
-      throw new Error('Gagal menghapus catatan, ID tidak ditemukan');
+      throw new Error('Catatan gagal dihapus. Id tidak ditemukan');
     }
 
     this._notes.splice(index, 1);
   }
 }
 
-module.exports = NoteService;
+module.exports = NotesService;
