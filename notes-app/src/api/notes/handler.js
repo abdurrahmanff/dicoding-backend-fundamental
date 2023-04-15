@@ -11,7 +11,7 @@ class NotesHandler {
 
   postNoteHandler(request, h) {
     try {
-      const { title = 'untitled', body, tags } = request.payloads;
+      const { title = 'untitled', body, tags } = request.payload;
 
       const noteId = this._service.addNote({ title, body, tags });
 
@@ -36,7 +36,6 @@ class NotesHandler {
 
   getNotesHandler() {
     const notes = this._service.getNotes();
-
     return {
       status: 'success',
       data: {
@@ -49,7 +48,6 @@ class NotesHandler {
     try {
       const { id } = request.params;
       const note = this._service.getNoteById(id);
-
       return {
         status: 'success',
         data: {
@@ -90,7 +88,6 @@ class NotesHandler {
     try {
       const { id } = request.params;
       this._service.deleteNoteById(id);
-
       return {
         status: 'success',
         message: 'Catatan berhasil dihapus',
