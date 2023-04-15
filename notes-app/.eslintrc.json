@@ -20,6 +20,10 @@
         "ts": "always",
         "tsx": "always"
       }
-    ]
+    ],
+    "no-console": "off",
+    "linebreak-style": "off",
+    "no-underscore-dangle": "off",
+    "camelcase": "off"
   }
 }
