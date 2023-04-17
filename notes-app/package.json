@@ -6,7 +6,8 @@
   "scripts": {
     "start-dev": "nodemon ./src/server.js",
     "start": "node ./src/server.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "migrate": "node-pg-migrate"
   },
   "devDependencies": {
     "eslint": "^7.32.0 || ^8.2.0",
