@@ -2,31 +2,31 @@
 
 exports.shorthands = undefined;
 
-exports.up = pgm => {
+exports.up = (pgm) => {
   pgm.createTable('albums', {
     id: {
       type: 'VARCHAR(50)',
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: 'VARCHAR(100)',
-      notNull: true
+      notNull: true,
     },
     yaer: {
       type: 'INTEGER',
-      notNull: true
+      notNull: true,
     },
     created_at: {
       type: 'VARCHAR(30)',
-      notNull: true
+      notNull: true,
     },
     updated_at: {
       type: 'VARCHAR(30)',
       notNull: true,
-    }
-  })
+    },
+  });
 };
 
-exports.down = pgm => {
-  pgm.dropTable('albums')
+exports.down = (pgm) => {
+  pgm.dropTable('albums');
 };
