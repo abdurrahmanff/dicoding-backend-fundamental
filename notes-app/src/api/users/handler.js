@@ -3,8 +3,8 @@ const ClientError = require('../../exceptions/ClientError.js');
 
 class UsersHandler {
   constructor(service, validator) {
-    this.service = service;
-    this.validator = validator;
+    this._service = service;
+    this._validator = validator;
 
     autoBind(this);
   }

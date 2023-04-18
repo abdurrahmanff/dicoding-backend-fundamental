@@ -6,14 +6,14 @@ const NotFoundError = require('../../exceptions/NotFoundError.js');
 
 class UsersServices {
   constructor() {
-    this.pool = new Pool();
+    this._pool = new Pool();
   }
 
   async addUser({ username, password, fullname }) {
     this.verifyNewUsername(username);
 
     const id = `user-${nanoid(16)}`;
-    const hashedPassword = await bcrypt.bash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id',
