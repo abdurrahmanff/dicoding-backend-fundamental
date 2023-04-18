@@ -5,6 +5,9 @@ const AlbumsService = require('./services/AlbumsService');
 const albums = require('./api/albums');
 const AlbumValidator = require('./validator/album');
 const ClientError = require('./exceptions/ClientError');
+const songs = require('./api/songs');
+const SongsSerivce = require('./services/SongsService');
+const SongValidator = require('./validator/song');
 
 const init = async () => {
   const server = Hapi.server({
@@ -18,12 +21,20 @@ const init = async () => {
   });
 
   const albumsService = new AlbumsService();
+  const songsService = new SongsSerivce();
   await server.register([
     {
       plugin: albums,
       options: {
         service: albumsService,
         validator: AlbumValidator,
+      },
+    },
+    {
+      plugin: songs,
+      options: {
+        service: songsService,
+        validator: SongValidator,
       },
     },
   ]);
