@@ -1,6 +1,8 @@
 const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const { MapAlbumDbToModel } = require('../utils');
+const InvariantError = require('../exceptions/InvariantError');
+const NotFoundError = require('../exceptions/NotFoundError');
 
 class AlbumsService {
   constructor() {
@@ -20,9 +22,9 @@ class AlbumsService {
     const result = await this.pool.query(query);
 
     if (!result.rows[0].id) {
-      throw new Error('Album gagal ditambahkan');
+      throw new InvariantError('Album gagal ditambahkan');
     }
-
+    console.log(result.rows);
     return result.rows[0].id;
   }
 
@@ -34,7 +36,7 @@ class AlbumsService {
 
     const result = await this.pool.query(query);
     if (!result.rowCount) {
-      throw Error('Album tidak ditemukan');
+      throw new NotFoundError('Album tidak ditemukan');
     }
 
     return result.rows.map(MapAlbumDbToModel)[0];
@@ -50,7 +52,7 @@ class AlbumsService {
 
     const result = await this.pool.query(query);
     if (!result.rowCount) {
-      throw new Error('Gagal memperbarui album. Id tidak ditemukan');
+      throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
     }
   }
 
@@ -62,7 +64,7 @@ class AlbumsService {
 
     const result = await this.pool.query(query);
     if (!result.rowCount) {
-      throw new Error('Gagal menghapus album. Id tidak ditemukan');
+      throw new NotFoundError('Gagal menghapus album. Id tidak ditemukan');
     }
   }
 }
