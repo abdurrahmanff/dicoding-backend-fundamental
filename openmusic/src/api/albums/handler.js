@@ -1,14 +1,14 @@
-const autobind = require('autobind');
+const autoBind = require('auto-bind');
 
 class AlbumHandler {
   constructor(service, validator) {
     this.service = service;
     this.validator = validator;
 
-    autobind(this);
+    autoBind(this);
   }
 
-  async postAlbum(request, h) {
+  async postAlbumHandler(request, h) {
     this.validator.validateAlbumPayload(request.payload);
 
     const albumId = this.service.addAlbum(request.payload);
