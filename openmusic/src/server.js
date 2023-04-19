@@ -17,6 +17,11 @@ const users = require('./api/users');
 const UsersService = require('./services/UsersService');
 const UsersValidator = require('./validator/users');
 
+// Authentications Service
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./services/AuthenticationsService');
+const AuthenticationsValidator = require('./validator/authentications');
+
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
@@ -33,6 +38,7 @@ const init = async () => {
   const albumsService = new AlbumsService();
   const songsService = new SongsSerivce();
   const usersService = new UsersService();
+  const authenticationsService = new AuthenticationsService();
   await server.register([
     {
       plugin: albums,
@@ -53,6 +59,13 @@ const init = async () => {
       options: {
         service: usersService,
         validator: UsersValidator,
+      },
+    },
+    {
+      plugin: authentications,
+      options: {
+        service: authenticationsService,
+        validator: AuthenticationsValidator,
       },
     },
   ]);
