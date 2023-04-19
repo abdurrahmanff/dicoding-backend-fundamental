@@ -16,13 +16,12 @@ class UsersService {
       text: 'INSERT into users VALUES($1, $2, $3, $4) RETURNING id',
       values: [id, username, hashedPassword, fullname],
     };
-
     const result = await this.pool.query(query);
 
-    if (!result.row[0].id) {
+    if (!result.rows[0].id) {
       throw new InvariantError('Gagal menambahkan user');
     }
-    return result.row[0].id;
+    return result.rows[0].id;
   }
 
   async verifyNewUser(username) {
