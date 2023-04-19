@@ -21,6 +21,7 @@ const UsersValidator = require('./validator/users');
 const authentications = require('./api/authentications');
 const AuthenticationsService = require('./services/AuthenticationsService');
 const AuthenticationsValidator = require('./validator/authentications');
+const TokenManager = require('./tokenize/TokenManager');
 
 const ClientError = require('./exceptions/ClientError');
 
@@ -64,7 +65,9 @@ const init = async () => {
     {
       plugin: authentications,
       options: {
-        service: authenticationsService,
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
         validator: AuthenticationsValidator,
       },
     },
