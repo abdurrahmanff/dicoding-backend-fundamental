@@ -48,7 +48,7 @@ class UsersService {
       throw new AuthenticationError('Username tidak ditemukan');
     }
 
-    const { id, hashedPassword } = result.rows[0];
+    const { id, password: hashedPassword } = result.rows[0];
     const match = await bcrypt.compare(password, hashedPassword);
 
     if (!match) {
