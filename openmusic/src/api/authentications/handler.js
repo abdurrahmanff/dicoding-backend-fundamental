@@ -16,15 +16,15 @@ class AuthenticationsHandler {
 
     const id = await this.usersService.verifyUserCredential(username, password);
 
-    const acccessToken = await this.tokenManager.generateAccessToken({ id });
-    const refreshToken = await this.tokenManager.generateRefreshToken({ id });
+    const accessToken = this.tokenManager.generateAccessToken({ id });
+    const refreshToken = this.tokenManager.generateRefreshToken({ id });
 
     await this.authenticationsService.addRefreshToken(refreshToken);
 
     const response = h.response({
       status: 'success',
       data: {
-        acccessToken,
+        accessToken,
         refreshToken,
       },
     });
@@ -39,12 +39,12 @@ class AuthenticationsHandler {
     await this.authenticationsService.verifyRefreshToken(refreshToken);
     const { id } = await this.tokenManager.verifyRefreshToken(refreshToken);
 
-    const acccessToken = await this.tokenManager.generateAccessToken({ id });
+    const accessToken = await this.tokenManager.generateAccessToken({ id });
 
     return {
       status: 'success',
       data: {
-        acccessToken,
+        accessToken,
       },
     };
   }
