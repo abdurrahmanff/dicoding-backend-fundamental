@@ -5,8 +5,9 @@ const { MapPlaylistDbToModel, MapPlaylistSongsDbToModel } = require('../utils');
 const NotFoundError = require('../exceptions/NotFoundError');
 
 class PlaylistsService {
-  constructor() {
+  constructor(songService) {
     this.pool = new Pool();
+    this.songService = songService;
   }
 
   async addPlaylist({ name }) {
@@ -50,6 +51,7 @@ class PlaylistsService {
 
   async addSongToPlaylist(playlistId, { songId }) {
     await this.verifyPlaylist(playlistId);
+    await this.songService.getSongById(songId);
 
     const id = `playlist_songs-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
@@ -86,6 +88,7 @@ class PlaylistsService {
 
   async removeSongFromPlaylistById(playlistId, { songId }) {
     await this.verifyPlaylist(playlistId);
+    await this.songService.getSongById(songId);
 
     const query = {
       text: 'DELETE FROM playlist_songs WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
