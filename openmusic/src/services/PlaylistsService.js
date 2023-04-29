@@ -34,8 +34,8 @@ class PlaylistsService {
     const query = {
       text: `SELECT p.id, p.name, u.username 
       FROM playlists AS p
-      LEFT JOIN users AS u ON u.id = p.owner
-      LEFT JOIN collaborations AS c ON c.user_id = u.id
+      JOIN users AS u ON p.owner = u.id
+      LEFT JOIN collaborations AS c ON p.id = c.playlist_id
       WHERE p.owner = $1 OR c.user_id = $1`,
       values: [owner],
     };
