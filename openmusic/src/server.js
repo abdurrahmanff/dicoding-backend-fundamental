@@ -31,7 +31,7 @@ const PlaylistValidator = require('./validator/playlist');
 
 // Collaborations plugin
 const collaborations = require('./api/collaborations');
-const CollaborationsService = require('./services/PlaylistsService');
+const CollaborationsService = require('./services/CollaborationsService');
 const CollaborationsValidator = require('./validator/collaboration');
 
 const ClientError = require('./exceptions/ClientError');
@@ -146,7 +146,7 @@ const init = async () => {
       // penanganan server error sesuai kebutuhan
       const newResponse = h.response({
         status: 'error',
-        message: 'terjadi kegagalan pada server kami',
+        message: response.message,
       });
       newResponse.code(500);
       return newResponse;
