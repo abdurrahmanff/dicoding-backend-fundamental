@@ -5,10 +5,10 @@ const AuthorizationError = require('../exceptions/AuthorizationError');
 const NotFoundError = require('../exceptions/NotFoundError');
 
 class PlaylistsService {
-  constructor(songService, collaborationService) {
+  constructor(songsService, collaborationsService) {
     this.pool = new Pool();
-    this.songService = songService;
-    this.collaborationService = collaborationService;
+    this.songsService = songsService;
+    this.collaborationsService = collaborationsService;
   }
 
   async addPlaylist({ name, owner }) {
@@ -59,7 +59,7 @@ class PlaylistsService {
 
   async addSongToPlaylist(playlistId, { songId }) {
     await this.verifyPlaylist(playlistId);
-    await this.songService.getSongById(songId);
+    await this.songsService.getSongById(songId);
 
     const id = `playlist_songs-${nanoid(16)}`;
     const createdAt = new Date().toISOString();
@@ -113,7 +113,7 @@ class PlaylistsService {
 
   async removeSongFromPlaylistById(playlistId, { songId }) {
     await this.verifyPlaylist(playlistId);
-    await this.songService.getSongById(songId);
+    await this.songsService.getSongById(songId);
 
     const query = {
       text: 'DELETE FROM playlist_songs WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
@@ -167,11 +167,45 @@ class PlaylistsService {
         throw e;
       }
       try {
-        await this.collaborationService.verifyCollaborator(playlistId, userId);
+        await this.collaborationsService.verifyCollaborator(playlistId, userId);
       } catch {
         throw e;
       }
     }
+  }
+
+  async logActivity(playlistId, songId, action, userId) {
+    const id = `psa-${nanoid(16)}`;
+    const time = new Date().toISOString();
+
+    const query = {
+      text: 'INSERT INTO playlist_song_activities VALUES($1, $2, $3, $4, $5, $6)',
+      values: [id, playlistId, songId, userId, action, time],
+    };
+
+    await this.pool.query(query);
+  }
+
+  async getLogActivities(playlistId) {
+    this.verifyPlaylist(playlistId);
+
+    const query = {
+      text: `SELECT u.username, s.title, psa.action, psa.time
+      FROM playlist_song_activities AS psa
+      JOIN songs AS s ON psa.song_id = s.id
+      JOIN users AS u ON psa.user_id = u.id
+      WHERE psa.playlist_id = $1
+      GROUP BY u.username, s.title, psa.action, psa.time
+      ORDER BY psa.time ASC`,
+      values: [playlistId],
+    };
+
+    const result = await this.pool.query(query);
+
+    return {
+      playlistId,
+      activities: result.rows,
+    };
   }
 }
 
