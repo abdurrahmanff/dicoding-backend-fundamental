@@ -87,17 +87,17 @@ class PlaylistsService {
     };
 
     const resultPlaylist = await this.pool.query(queryPlaylist);
+    const playlist = resultPlaylist.rows[0];
 
     const querySongs = {
       text: `SELECT s.id, s.title, s.performer
       FROM songs as s
       INNER JOIN playlist_songs AS ps ON ps.song_id = s.id
       WHERE ps.playlist_id = $1`,
-      values: [id],
+      values: [playlist.id],
     };
 
     const resultSongs = await this.pool.query(querySongs);
-    const playlist = resultPlaylist.rows[0];
     const songs = resultSongs.rows;
 
     const result = {
@@ -146,7 +146,7 @@ class PlaylistsService {
     const result = await this.pool.query(query);
 
     if (!result.rowCount) {
-      throw NotFoundError('Playlist tidak ditemukan');
+      throw new NotFoundError('Playlist tidak ditemukan');
     }
 
     const playlist = result.rows[0];
