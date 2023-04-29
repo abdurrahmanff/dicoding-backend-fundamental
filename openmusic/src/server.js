@@ -24,10 +24,15 @@ const AuthenticationsService = require('./services/AuthenticationsService');
 const AuthenticationsValidator = require('./validator/authentications');
 const TokenManager = require('./tokenize/TokenManager');
 
-// Playlists Plugin
+// Playlists pugin
 const playlists = require('./api/playlists');
 const PlaylistService = require('./services/PlaylistsService');
 const PlaylistValidator = require('./validator/playlist');
+
+// Collaborations plugin
+const collaborations = require('./api/collaborations');
+const CollaborationsService = require('./services/PlaylistsService');
+const CollaborationsValidator = require('./validator/collaboration');
 
 const ClientError = require('./exceptions/ClientError');
 
@@ -70,6 +75,7 @@ const init = async () => {
   const songsService = new SongsSerivce();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
+  const collaborationsService = new CollaborationsService();
   const playlistService = new PlaylistService(songsService);
 
   await server.register([
@@ -108,6 +114,14 @@ const init = async () => {
       options: {
         service: playlistService,
         validator: PlaylistValidator,
+      },
+    },
+    {
+      plugin: collaborations,
+      options: {
+        collaborationsService,
+        playlistService,
+        validator: CollaborationsValidator,
       },
     },
   ]);
