@@ -26,7 +26,7 @@ const TokenManager = require('./tokenize/TokenManager');
 
 // Playlists pugin
 const playlists = require('./api/playlists');
-const PlaylistService = require('./services/PlaylistsService');
+const PlaylistsService = require('./services/PlaylistsService');
 const PlaylistValidator = require('./validator/playlist');
 
 // Collaborations plugin
@@ -76,7 +76,7 @@ const init = async () => {
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const collaborationsService = new CollaborationsService();
-  const playlistService = new PlaylistService(songsService, collaborationsService);
+  const playlistsService = new PlaylistsService(songsService, collaborationsService);
 
   await server.register([
     {
@@ -112,7 +112,7 @@ const init = async () => {
     {
       plugin: playlists,
       options: {
-        service: playlistService,
+        service: playlistsService,
         validator: PlaylistValidator,
       },
     },
@@ -120,7 +120,8 @@ const init = async () => {
       plugin: collaborations,
       options: {
         collaborationsService,
-        playlistService,
+        playlistsService,
+        usersService,
         validator: CollaborationsValidator,
       },
     },
