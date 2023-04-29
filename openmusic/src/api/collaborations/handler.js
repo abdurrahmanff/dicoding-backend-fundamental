@@ -16,6 +16,7 @@ class CollaborationsHandler {
     const { id: credentialId } = request.auth.credentials;
     const { playlistId, userId } = request.payload;
 
+    await this.usersService.verifyUser(userId);
     await this.playlistsService.verifyPlaylistOwner(playlistId, { owner: credentialId });
     const collaborationId = await this.collaborationsService.addCollaboration({
       playlistId, userId,
@@ -38,7 +39,6 @@ class CollaborationsHandler {
     const { id: credentialId } = request.auth.credentials;
     const { playlistId, userId } = request.payload;
 
-    await this.usersService.verifyUser(userId);
     await this.playlistsService.verifyPlaylistOwner(playlistId, { owner: credentialId });
     await this.collaborationsService.removeCollaboration({ playlistId, userId });
 
