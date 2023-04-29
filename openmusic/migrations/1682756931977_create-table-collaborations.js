@@ -16,6 +16,14 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
       notNull: true,
     },
+    created_at: {
+      type: 'VARCHAR(30)',
+      notNull: true,
+    },
+    updated_at: {
+      type: 'VARCHAR(30)',
+      notNull: true,
+    },
   });
 
   pgm.addConstraint('collaborations', 'fk_collaborations.playlist_id_playlists.id', 'FOREIGN KEY(playlist_id) REFERENCES playlists(id) ON DELETE CASCADE');
