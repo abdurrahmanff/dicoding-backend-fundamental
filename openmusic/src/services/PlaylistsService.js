@@ -35,8 +35,8 @@ class PlaylistsService {
       text: `SELECT p.id, p.name, u.username 
       FROM playlists AS p
       LEFT JOIN users AS u ON u.id = p.owner
-      LEFT JOIN collaborations AS c ON c.playlist_id = p.id
-      WHERE playlists.owner = $1 OR c.user_id = $1`,
+      LEFT JOIN collaborations AS c ON c.user_id = u.id
+      WHERE p.owner = $1 OR c.user_id = $1`,
       values: [owner],
     };
     const result = await this.pool.query(query);
