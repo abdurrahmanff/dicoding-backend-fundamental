@@ -2,7 +2,6 @@ const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
 const InvariantError = require('../exceptions/InvariantError');
 const AuthorizationError = require('../exceptions/AuthorizationError');
-const { MapPlaylistDbToModel } = require('../utils');
 const NotFoundError = require('../exceptions/NotFoundError');
 
 class PlaylistsService {
@@ -32,16 +31,15 @@ class PlaylistsService {
 
   async getPlaylists({ owner }) {
     const query = {
-      text: `SELECT playlists.*, users.username 
+      text: `SELECT playlists.id, playlists.name, users.username 
       FROM playlists 
       LEFT JOIN users ON users.id = playlists.owner
-      WHERE playlists.owner = $1
-      GROUP BY playlists.id`,
+      WHERE playlists.owner = $1`,
       values: [owner],
     };
     const result = await this.pool.query(query);
 
-    return result.rows.map(MapPlaylistDbToModel);
+    return result.rows;
   }
 
   async removePlaylistById(id) {
@@ -80,18 +78,34 @@ class PlaylistsService {
   async getPlaylistById(id, { owner }) {
     await this.verifyPlaylist(id);
 
-    const query = {
-      text: `SELECT 
-      playlists.id, playlists.name, playlists.owner, playlist_songs.* 
+    const queryPlaylist = {
+      text: `SELECT p.id, p.name, u.username
       FROM playlists AS p
-      LEFT JOIN playlist_songs AS ps ON p.id = ps.playlist_id
-      WHERE p.owner = $1 AND ps.id = $2`,
-      values: [owner, id],
+      LEFT JOIN users AS u ON u.id = p.owner
+      WHERE p.id = $1 AND p.owner = $2`,
+      values: [id, owner],
     };
 
-    const result = await this.pool.query(query);
+    const resultPlaylist = await this.pool.query(queryPlaylist);
 
-    return result.rows[0];
+    const querySongs = {
+      text: `SELECT s.id, s.title, s.performer
+      FROM songs as s
+      INNER JOIN playlist_songs AS ps ON ps.song_id = s.id
+      WHERE ps.playlist_id = $1`,
+      values: [id],
+    };
+
+    const resultSongs = await this.pool.query(querySongs);
+    const playlist = resultPlaylist.rows[0];
+    const songs = resultSongs.rows;
+
+    const result = {
+      ...playlist,
+      songs,
+    };
+
+    return result;
   }
 
   async removeSongFromPlaylistById(playlistId, { songId }) {
@@ -125,7 +139,7 @@ class PlaylistsService {
 
   async verifyPlaylistOwner(id, { owner }) {
     const query = {
-      text: 'SELECT * FROM notes WHERE id = $1',
+      text: 'SELECT * FROM playlists WHERE id = $1',
       values: [id],
     };
 
