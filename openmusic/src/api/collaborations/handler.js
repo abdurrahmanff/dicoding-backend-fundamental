@@ -1,9 +1,10 @@
 const autoBind = require('auto-bind');
 
 class CollaborationsHandler {
-  constructor(collaborationsService, playlistService, validator) {
+  constructor(collaborationsService, playlistsService, usersService, validator) {
     this.collaborationsService = collaborationsService;
-    this.playlistService = playlistService;
+    this.playlistsService = playlistsService;
+    this.usersService = usersService;
     this.validator = validator;
 
     autoBind(this);
@@ -15,13 +16,13 @@ class CollaborationsHandler {
     const { id: credentialId } = request.auth.credentials;
     const { playlistId, userId } = request.payload;
 
-    await this.playlistService.verifyPlaylistOwner(playlistId, { owner: credentialId });
+    await this.playlistsService.verifyPlaylistOwner(playlistId, { owner: credentialId });
     const collaborationId = await this.collaborationsService.addCollaboration({
       playlistId, userId,
     });
 
     const response = h.response({
-      status: 'message',
+      status: 'success',
       message: 'Berhasil menambahkan kolaborasi',
       data: {
         collaborationId,
@@ -37,7 +38,8 @@ class CollaborationsHandler {
     const { id: credentialId } = request.auth.credentials;
     const { playlistId, userId } = request.payload;
 
-    await this.playlistService.verifyPlaylistOwner(playlistId, { owner: credentialId });
+    await this.usersService.verifyUser(userId);
+    await this.playlistsService.verifyPlaylistOwner(playlistId, { owner: credentialId });
     await this.collaborationsService.removeCollaboration({ playlistId, userId });
 
     return {
