@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
 
 // Album plugin
 const AlbumsService = require('./services/AlbumsService');
@@ -17,11 +18,16 @@ const users = require('./api/users');
 const UsersService = require('./services/UsersService');
 const UsersValidator = require('./validator/users');
 
-// Authentications Service
+// Authentications plugin
 const authentications = require('./api/authentications');
 const AuthenticationsService = require('./services/AuthenticationsService');
 const AuthenticationsValidator = require('./validator/authentications');
 const TokenManager = require('./tokenize/TokenManager');
+
+// Playlists Plugin
+const playlists = require('./api/playlists');
+const PlaylistService = require('./services/PlaylistsService');
+const PlaylistValidator = require('./validator/playlist');
 
 const ClientError = require('./exceptions/ClientError');
 
@@ -36,10 +42,36 @@ const init = async () => {
     },
   });
 
+  // Register external plugins
+  await server.register([
+    {
+      plugin: Jwt,
+    },
+  ]);
+
+  // Define JWT Strat
+  server.auth.strategy('openmusic_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: {
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+    },
+    validate: (artifacts) => ({
+      isValid: true,
+      credentials: {
+        id: artifacts.decoded.payload.id,
+      },
+    }),
+  });
+
   const albumsService = new AlbumsService();
   const songsService = new SongsSerivce();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
+  const playlistService = new PlaylistService(songsService);
+
   await server.register([
     {
       plugin: albums,
@@ -69,6 +101,13 @@ const init = async () => {
         usersService,
         tokenManager: TokenManager,
         validator: AuthenticationsValidator,
+      },
+    },
+    {
+      plugin: playlists,
+      options: {
+        service: playlistService,
+        validator: PlaylistValidator,
       },
     },
   ]);
