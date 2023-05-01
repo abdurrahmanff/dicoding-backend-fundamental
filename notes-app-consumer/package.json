@@ -10,8 +10,7 @@
     "pg": "^8.10.0"
   },
   "scripts": {
-    "start-dev": "nodemon ./src/server.js",
-    "start": "node ./src/server.js",
+    "start": "node src/consumer.js",
     "lint": "eslint ./src",
     "migrate": "node-pg-migrate"
   },
