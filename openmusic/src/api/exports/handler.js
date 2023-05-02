@@ -1,8 +1,12 @@
+const autoBind = require('auto-bind');
+
 class ExportsHandler {
   constructor(ProducerService, playlistsService, validator) {
     this.ProducerService = ProducerService;
     this.playlistsService = playlistsService;
     this.validator = validator;
+
+    autoBind(this);
   }
 
   async postExportPlaylistByIdHandler(request, h) {
@@ -10,7 +14,7 @@ class ExportsHandler {
 
     const { playlistId } = request.params;
     const { id: credentialId } = request.auth.credentials;
-    await this.playlistsService.verivyPlaylistOwner(playlistId, { owner: credentialId });
+    await this.playlistsService.verifyPlaylistOwner(playlistId, { owner: credentialId });
 
     const message = {
       userId: credentialId,
