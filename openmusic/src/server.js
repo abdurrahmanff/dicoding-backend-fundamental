@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const config = require('./utils/config');
 
 // Album plugin
 const AlbumsService = require('./services/postgres/AlbumsService');
@@ -43,8 +44,8 @@ const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT,
-    host: process.env.HOST,
+    port: config.app.port,
+    host: config.app.host,
     routes: {
       cors: {
         origin: ['*'],
