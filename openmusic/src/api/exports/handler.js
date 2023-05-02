@@ -1,6 +1,6 @@
 class ExportsHandler {
-  constructor(exportsService, playlistsService, validator) {
-    this.exportsService = exportsService;
+  constructor(ProducerService, playlistsService, validator) {
+    this.ProducerService = ProducerService;
     this.playlistsService = playlistsService;
     this.validator = validator;
   }
@@ -17,7 +17,7 @@ class ExportsHandler {
       targetEmail: request.payload.targetEmail,
     };
 
-    await this.exportsService.sendMessage('export:playlists', message);
+    await this.ProducerService.sendMessage('export:playlists', message);
 
     const response = h.response({
       status: 'success',
