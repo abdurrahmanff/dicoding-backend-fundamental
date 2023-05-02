@@ -4,34 +4,34 @@ const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 
 // Album plugin
-const AlbumsService = require('./services/AlbumsService');
+const AlbumsService = require('./services/postgres/AlbumsService');
 const albums = require('./api/albums');
 const AlbumValidator = require('./validator/album');
 
 // Song plugin
 const songs = require('./api/songs');
-const SongsSerivce = require('./services/SongsService');
+const SongsSerivce = require('./services/postgres/SongsService');
 const SongValidator = require('./validator/song');
 
 // User plugin
 const users = require('./api/users');
-const UsersService = require('./services/UsersService');
+const UsersService = require('./services/postgres/UsersService');
 const UsersValidator = require('./validator/users');
 
 // Authentications plugin
 const authentications = require('./api/authentications');
-const AuthenticationsService = require('./services/AuthenticationsService');
+const AuthenticationsService = require('./services/postgres/AuthenticationsService');
 const AuthenticationsValidator = require('./validator/authentications');
 const TokenManager = require('./tokenize/TokenManager');
 
 // Playlists pugin
 const playlists = require('./api/playlists');
-const PlaylistsService = require('./services/PlaylistsService');
+const PlaylistsService = require('./services/postgres/PlaylistsService');
 const PlaylistValidator = require('./validator/playlist');
 
 // Collaborations plugin
 const collaborations = require('./api/collaborations');
-const CollaborationsService = require('./services/CollaborationsService');
+const CollaborationsService = require('./services/postgres/CollaborationsService');
 const CollaborationsValidator = require('./validator/collaboration');
 
 const ClientError = require('./exceptions/ClientError');
