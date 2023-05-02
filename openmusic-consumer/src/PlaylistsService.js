@@ -2,18 +2,15 @@ const { Pool } = require('pg');
 
 class PlaylistsService {
   constructor() {
-    this._pool = new Pool();
+    this.pool = new Pool();
   }
 
   async getPlaylistById(id, { owner }) {
-    await this.verifyPlaylist(id);
-
     const queryPlaylist = {
       text: `SELECT p.id, p.name, u.username
       FROM playlists AS p
       JOIN users AS u ON p.owner = u.id
-      LEFT JOIN collaborations AS c ON p.id = c.playlist_id
-      WHERE (p.owner = $2 OR c.user_id = $2) AND p.id = $1`,
+      WHERE p.owner = $2 AND p.id = $1`,
       values: [id, owner],
     };
 
