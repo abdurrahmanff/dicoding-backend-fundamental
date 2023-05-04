@@ -13,7 +13,7 @@ const MapAlbumDbToModel = ({
   year,
   createdAt: created_at,
   updatedAt: updated_at,
-  coverUrl: `http://${process.env.HOST}:${process.env.PORT}/images/${cover}`,
+  coverUrl: cover ? `http://${process.env.HOST}:${process.env.PORT}/images/${cover}` : null,
 });
 
 const MapSongDbToModel = ({
