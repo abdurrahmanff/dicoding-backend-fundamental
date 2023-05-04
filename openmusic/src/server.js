@@ -95,7 +95,7 @@ const init = async () => {
   const authenticationsService = new AuthenticationsService();
   const collaborationsService = new CollaborationsService();
   const playlistsService = new PlaylistsService(songsService, collaborationsService);
-  const storageService = new StorageService(path.resolve(__dirname, 'api/public/images'), albumsService);
+  const storageService = new StorageService(path.resolve(__dirname, 'public/images'), albumsService);
 
   await server.register([
     {
