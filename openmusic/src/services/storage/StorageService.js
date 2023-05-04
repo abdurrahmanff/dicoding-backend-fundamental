@@ -1,23 +1,27 @@
 const fs = require('fs');
 
 class StorageService {
-  constructor(directory) {
+  constructor(directory, albumsService) {
     this.directory = directory;
+    this.albumsService = albumsService;
     if (!fs.existsSync(directory)) {
       fs.mkdirSync(directory, { recursive: true });
     }
   }
 
-  writeFile(file, meta) {
+  writeFile(file, meta, album) {
+    if (album.cover) {
+      fs.unlinkSync(`${this.directory}/${album.cover}`);
+    }
     const filename = +new Date() + meta.filenames;
     const path = `${this.directory}/${filename}`;
 
     const fileStream = fs.createWriteStream(path);
 
-    return new Promise((resolve, reject) => {
+    return new Promise((_, reject) => {
       fileStream.on('error', (e) => reject(e));
       file.pipe(fileStream);
-      file.on('end', () => resolve(filename));
+      fileStream.on('end', () => this.albumsService.upsertCoverAlbumById(album.id, filename));
     });
   }
 }
