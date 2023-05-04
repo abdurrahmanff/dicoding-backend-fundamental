@@ -22,7 +22,7 @@ class PlaylistsService {
       FROM songs as s
       INNER JOIN playlist_songs AS ps ON ps.song_id = s.id
       WHERE ps.playlist_id = $1`,
-      values: [playlist.id],
+      values: [id],
     };
 
     const resultSongs = await this.pool.query(querySongs);
