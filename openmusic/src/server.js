@@ -49,6 +49,9 @@ const UploadsValidator = require('./validator/uploads');
 // Image plugin
 const images = require('./api/images');
 
+// Cache
+const CacheService = require('./services/redis/CacheService');
+
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
@@ -89,7 +92,8 @@ const init = async () => {
     }),
   });
 
-  const albumsService = new AlbumsService();
+  const cacheService = new CacheService();
+  const albumsService = new AlbumsService(cacheService);
   const songsService = new SongsSerivce();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
