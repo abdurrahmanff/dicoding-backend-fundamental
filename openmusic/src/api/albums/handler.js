@@ -1,17 +1,19 @@
 const autoBind = require('auto-bind');
 
 class AlbumHandler {
-  constructor(service, validator) {
-    this.service = service;
-    this.validator = validator;
+  constructor(albumsService, storageService, albumsValidator, uploadsValidator) {
+    this.albumsService = albumsService;
+    this.storageService = storageService;
+    this.albumsValidator = albumsValidator;
+    this.uploadsValidator = uploadsValidator;
 
     autoBind(this);
   }
 
   async postAlbumHandler(request, h) {
-    this.validator.validateAlbumPayload(request.payload);
+    this.albumsValidator.validateAlbumPayload(request.payload);
 
-    const albumId = await this.service.addAlbum(request.payload);
+    const albumId = await this.albumsService.addAlbum(request.payload);
 
     const response = h.response({
       status: 'success',
@@ -25,7 +27,7 @@ class AlbumHandler {
 
   async getAlbumByIdHandler(request) {
     const { id } = request.params;
-    const album = await this.service.getAlbumByIdWithSongs(id);
+    const album = await this.albumsService.getAlbumByIdWithSongs(id);
 
     return {
       status: 'success',
@@ -36,10 +38,10 @@ class AlbumHandler {
   }
 
   async putAlbumByIdHandler(request) {
-    this.validator.validateAlbumPayload(request.payload);
+    this.albumsValidator.validateAlbumPayload(request.payload);
     const { id } = request.params;
 
-    await this.service.editAlbumById(id, request.payload);
+    await this.albumsService.editAlbumById(id, request.payload);
 
     return {
       status: 'success',
@@ -50,12 +52,28 @@ class AlbumHandler {
   async deleteAlbumByIdHandler(request) {
     const { id } = request.params;
 
-    await this.service.deleteAlbumById(id);
+    await this.albumsService.deleteAlbumById(id);
 
     return {
       status: 'success',
       message: 'Album berhasil dihapus',
     };
+  }
+
+  async postAlbumCoverByIdHandler(request, h) {
+    const { data } = request.payload;
+    this.uploadsValidator.validateImageHeaders(data.hapi.headers);
+
+    const { id: albumId } = request.params;
+    const album = await this.albumsService.getAlbumById(albumId);
+    await this.storageService.writeFile(data, data.hapi, album);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Sampul berhasil diunggah',
+    });
+    response.code(201);
+    return response;
   }
 }
 
