@@ -61,7 +61,7 @@ class AlbumHandler {
   }
 
   async postAlbumCoverByIdHandler(request, h) {
-    const { data } = request.payload;
+    const { cover: data } = request.payload;
     this.uploadsValidator.validateImageHeaders(data.hapi.headers);
 
     const { id: albumId } = request.params;
