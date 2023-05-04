@@ -18,10 +18,13 @@ class StorageService {
 
     const fileStream = fs.createWriteStream(path);
 
-    return new Promise((_, reject) => {
+    return new Promise((resolve, reject) => {
       fileStream.on('error', (e) => reject(e));
       file.pipe(fileStream);
-      file.on('end', () => this.albumsService.upsertCoverAlbumById(album.id, filename));
+      file.on('end', () => {
+        this.albumsService.upsertCoverAlbumById(album.id, filename);
+        resolve();
+      });
     });
   }
 }
