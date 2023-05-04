@@ -13,7 +13,7 @@ class StorageService {
     if (album.cover) {
       fs.unlinkSync(`${this.directory}/${album.cover}`);
     }
-    const filename = +new Date() + meta.filenames;
+    const filename = +new Date() + meta.filename;
     const path = `${this.directory}/${filename}`;
 
     const fileStream = fs.createWriteStream(path);
@@ -21,7 +21,7 @@ class StorageService {
     return new Promise((_, reject) => {
       fileStream.on('error', (e) => reject(e));
       file.pipe(fileStream);
-      fileStream.on('end', () => this.albumsService.upsertCoverAlbumById(album.id, filename));
+      file.on('end', () => this.albumsService.upsertCoverAlbumById(album.id, filename));
     });
   }
 }
