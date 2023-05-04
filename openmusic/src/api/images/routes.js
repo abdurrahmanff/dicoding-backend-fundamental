@@ -6,7 +6,7 @@ const routes = () => [
     path: '/images/{param*}',
     handler: {
       directory: {
-        path: path.resolve(__dirname, 'api/public/images'),
+        path: path.resolve(__dirname, '../../public/images'),
       },
     },
   },
