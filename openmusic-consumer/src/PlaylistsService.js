@@ -5,13 +5,12 @@ class PlaylistsService {
     this.pool = new Pool();
   }
 
-  async getPlaylistById(id, { owner }) {
+  async getPlaylistById(id) {
     const queryPlaylist = {
-      text: `SELECT p.id, p.name, u.username
-      FROM playlists AS p
-      JOIN users AS u ON p.owner = u.id
-      WHERE p.owner = $2 AND p.id = $1`,
-      values: [id, owner],
+      text: `SELECT id, name
+      FROM playlists
+      WHERE id = $1`,
+      values: [id],
     };
 
     const resultPlaylist = await this.pool.query(queryPlaylist);
@@ -22,7 +21,7 @@ class PlaylistsService {
       FROM songs as s
       INNER JOIN playlist_songs AS ps ON ps.song_id = s.id
       WHERE ps.playlist_id = $1`,
-      values: [id],
+      values: [playlist.id],
     };
 
     const resultSongs = await this.pool.query(querySongs);
