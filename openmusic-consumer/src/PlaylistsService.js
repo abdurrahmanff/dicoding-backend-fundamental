@@ -14,22 +14,23 @@ class PlaylistsService {
     };
 
     const resultPlaylist = await this.pool.query(queryPlaylist);
-    const playlist = resultPlaylist.rows[0];
 
     const querySongs = {
       text: `SELECT s.id, s.title, s.performer
       FROM songs as s
       INNER JOIN playlist_songs AS ps ON ps.song_id = s.id
       WHERE ps.playlist_id = $1`,
-      values: [playlist.id],
+      values: [resultPlaylist.rows[0].id],
     };
 
     const resultSongs = await this.pool.query(querySongs);
     const songs = resultSongs.rows;
 
     const result = {
-      ...playlist,
-      songs,
+      playlist: {
+        ...resultPlaylist.rows[0],
+        songs,
+      },
     };
 
     return result;
